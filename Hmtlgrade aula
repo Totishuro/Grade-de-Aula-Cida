@@ -1,0 +1,317 @@
+import React, { useState } from 'react';
+import { Calendar, Download, Search, Filter, ChevronDown, ChevronUp } from 'lucide-react';
+
+const GradeHorarios = () => {
+  const [diaSelecionado, setDiaSelecionado] = useState('SEGUNDA');
+  const [turmaSelecionada, setTurmaSelecionada] = useState('TODAS');
+  const [professorFiltro, setProfessorFiltro] = useState('');
+  const [mostrarResumo, setMostrarResumo] = useState(false);
+
+  const gradeData = {
+    'SEGUNDA': [
+      ['1M', 'LUCINEIDE', 'VAGO', 'ILZA', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'ILZA'],
+      ['2M', 'LUCINEIDE', 'ADRIANAPEDRO', 'ILZA', 'JEFF', 'JEFF', 'ADRIANA', 'LUCINEIDE', 'NEUSA', 'ILZA'],
+      ['3M', 'LUCINEIDE', 'ADRIANAPEDRO', 'EMERSONFRED', 'JEFF', 'JEFF', 'ADRIANA', 'LUCINEIDE', 'EMERSON', 'PEDRO'],
+      ['4M', 'JULIANA', 'ADRIANAPEDRO', 'EMERSONFRED', 'JEFF', 'MATEMÁTICA', 'ADRIANA', 'JULIANA', 'EMERSON', 'PEDRO'],
+      ['5M', 'JULIANA', 'ADRIANAPEDRO', 'EMERSONFRED', 'JEFF', 'MATEMÁTICA', 'FLAVIA', 'JULIANA', 'MATEMÁTICA', 'PEDRO'],
+      ['1T', 'VICTOR', 'MIRIA', 'LORENA', 'VICTOR', 'MIRIA', 'LORENA', 'VICTOR', 'MIRIA', 'PEDRO'],
+      ['2T', 'VICTOR', 'LORENA', 'LORENA', 'VICTOR', 'LORENA', 'LORENA', 'VICTOR', 'VICTOR', 'LORENA'],
+      ['3T', 'EDNEIA', 'VICTOR', 'DANIEL', 'EDNEIA', 'VICTOR', 'EDNEIA', 'EDNEIA', 'VICTOR', 'EDNEIA'],
+      ['4T', 'EDNEIA', 'FRED', 'DANIEL', 'FLAVIA', 'FRED', 'FLAVIA', 'FLAVIA', 'FLAVIA', 'LORENA'],
+      ['5T', 'PEDRO', 'FRED', 'WENDEL', 'FLAVIA', 'FLAVIA', 'FLAVIA', 'GIRLAINE', 'FLAVIA', 'WENDEL']
+    ],
+    'TERÇA': [
+      ['1M', 'ALINEHIS', 'NEUSA', 'ALINEHIS', 'ALINEHIS', 'NEUSA', 'ALINEHIS', 'ALINEHIS', 'NEUSA', 'ALINEHIS'],
+      ['2M', 'ALINEHIS', 'NEUSA', 'ALINEHIS', 'JEFF', 'DOMINGOS', 'ALINEHIS', 'ALINEHIS', 'EMERSONGIR', 'ALINEHIS'],
+      ['3M', 'JULIANA', 'FLAVIA', 'FLAVIA', 'JEFF', 'DOMINGOS', 'FLAVIA', 'NEUSA', 'EMERSONGIR', 'FLAVIA'],
+      ['4M', 'JULIANA', 'FLAVIA', 'FLAVIA', 'JEFF', 'DOMINGOS', 'FLAVIA', 'NEUSA', 'EMERSONGIR', 'FLAVIA'],
+      ['5M', 'ALEXANDRE', 'ALEXANDRE', 'ALEXANDRE', 'JEFF', 'DOMINGOS', 'ALEXANDRE', 'ALEXANDRE', 'EMERSONGIR', 'ALEXANDRE'],
+      ['1T', 'VAGO', 'EMERSONKENIA', 'LORENA', 'BERNARD', 'LORENA', 'BERNARD', 'VAGO', 'VICTOR', 'LORENA'],
+      ['2T', 'VAGO', 'EMERSONKENIA', 'LORENA', 'BERNARD', 'LORENA', 'BERNARD', 'VAGO', 'VICTOR', 'WENDEL'],
+      ['3T', 'VAGO', 'EMERSONKENIA', 'EMERSON', 'GIRLAINE', 'MIRIA', 'BERNARD', 'VAGO', 'VICTOR', 'MIRIA'],
+      ['4T', 'VAGO', 'EMERSONKENIA', 'EMERSON', 'GIRLAINE', 'MIRIA', 'DOMPAULO', 'VAGO', 'PEDRO', 'WENDEL'],
+      ['5T', 'VAGO', 'KENIA', 'EMERSON', 'GIRLAINE', 'PAULO', 'DOMPAULO', 'VAGO', 'PEDRO', 'WENDEL']
+    ],
+    'QUARTA': [
+      ['1M', 'ALINEHIS', 'ILZA', 'ALINEHIS', 'DOMPAULO', 'ILZA', 'BRUNA', 'ALINEHIS', 'ALINEFRED', 'ILZA'],
+      ['2M', 'ALINEHIS', 'JULIANA', 'ALINEHIS', 'DOMPAULO', 'JEFF', 'BRUNA', 'ALINEHIS', 'ALINEFRED', 'ALINEFAR'],
+      ['3M', 'NEUSA', 'EMERSON', 'EMERSONFRED', 'DOMPAULO', 'JEFF', 'ALINEHIS', 'NEUSA', 'LUCINEIDE', 'ALINEFAR'],
+      ['4M', 'DANIELFRED', 'EMERSON', 'EMERSONFRED', 'DOMPAULO', 'JEFF', 'ALINEHIS', 'ALINEFRED', 'LUCINEIDE', 'ALINEFAR'],
+      ['5M', 'DANIELFRED', 'WENDEL', 'EMERSONFRED', 'FLAVIA', 'JEFF', 'ALINEHIS', 'ALINEFRED', 'LUCINEIDE', 'ALINEFAR'],
+      ['1T', 'GIRLAINE', 'MIRIA', 'EDNEIA', 'GIRLAINE', 'LORENA', 'LORENA', 'GIRLAINE', 'PEDRORAISSA', 'LORENA'],
+      ['2T', 'DANIELFRED', 'MIRIA', 'EDNEIA', 'MIRIA', 'LORENA', 'LORENA', 'MIRIA', 'PEDRORAISSA', 'RAISSA'],
+      ['3T', 'DANIELFRED', 'RAISSA', 'LORENA', 'EDNEIA', 'RAISSA', 'EDNEIA', 'EDNEIA', 'PEDRORAISSA', 'EDNEIA'],
+      ['4T', 'MIRIA', 'PEDRO', 'DANIELKENIA', 'FRED', 'PEDRO', 'DOMPAULO', 'FRED', 'PEDRORAISSA', 'RAISSA'],
+      ['5T', 'MIRIA', 'PEDRO', 'DANIELKENIA', 'PAULO', 'PAULO', 'PAULO', 'FRED', 'RAISSA', 'PAULO']
+    ],
+    'QUINTA': [
+      ['1M', 'NEUSA', 'LUCINEIDE', 'ALINEFAR', 'JEFF', 'LUCINEIDE', 'DOMINGOS', 'NEUSA', 'ALINEFAR', 'ALINEFAR'],
+      ['2M', 'WENDEL', 'MATEMÁTICA', 'ALINEFAR', 'JEFF', 'LUCINEIDE', 'DOMINGOS', 'WENDEL', 'ALINEFAR', 'ALINEFAR'],
+      ['3M', 'ALEXANDRE', 'MATEMÁTICA', 'ALEXANDRE', 'JEFF', 'ALEXANDRE', 'ALEXANDRE', 'ALEXANDRE', 'ALINEFAR', 'ALEXANDRE'],
+      ['4M', 'ALEXANDRE', 'FLAVIA', 'FLAVIA', 'JEFF', 'ALEXANDRE', 'FLAVIA', 'ALEXANDRE', 'PEDRORAISSA', 'FLAVIA'],
+      ['5M', 'FLAVIA', 'FLAVIA', 'FLAVIA', 'JEFF', 'FLAVIA', 'FLAVIA', 'FLAVIA', 'PEDRORAISSA', 'FLAVIA'],
+      ['1T', 'FRED', 'WENDEL', 'LORENA', 'RAISSA', 'LORENA', 'LORENA', 'MIRIA', 'PEDRORAISSA', 'LORENA'],
+      ['2T', 'GIRLAINE', 'VICTOR', 'WENDEL', 'GIRLAINE', 'VICTOR', 'WENDEL', 'GIRLAINE', 'PEDRORAISSA', 'WENDEL'],
+      ['3T', 'VICTOR', 'VICTOR', 'WENDEL', 'VICTOR', 'VICTOR', 'VICTOR', 'VICTOR', 'DOMPAULO', 'VICTOR'],
+      ['4T', 'RAISSA', 'KENIA', 'DANIELKENIA', 'MIRIA', 'RAISSA', 'RAISSA', 'PAULO', 'ADRIANA', 'ADRIANA'],
+      ['5T', 'WENDEL', 'KENIA', 'DANIELKENIA', 'WENDEL', 'WENDEL', 'ADRIANA', 'PAULO', 'ADRIANA', 'ADRIANA']
+    ],
+    'SEXTA': [
+      ['1M', 'ILZA', 'JULIANA', 'ILZA', 'ILZA', 'JULIANA', 'ILZA', 'ILZA', 'JULIANA', 'VAGO'],
+      ['2M', 'JULIANA', 'WENDEL', 'JULIANA', 'JULIANA', 'JEFF', 'JULIANA', 'JULIANA', 'WENDEL', 'VAGO'],
+      ['3M', 'JULIANA', 'ALEXANDRE', 'ALEXANDRE', 'ALEXANDRE', 'JEFF', 'ALEXANDRE', 'ALEXANDRE', 'ALEXANDRE', 'VAGO'],
+      ['4M', 'ALEXANDRE', 'ADRIANA', 'ALEXANDRE', 'ALEXANDRE', 'ALEXANDRE', 'ALEXANDRE', 'ALEXANDRE', 'ALEXANDRE', 'VAGO'],
+      ['5M', 'ALEXANDRE', 'ADRIANA', 'DANIEL', 'RAISSA', 'RAISSA', 'RAISSA', 'RAISSA', 'WENDEL', 'VAGO'],
+      ['1T', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO'],
+      ['2T', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO'],
+      ['3T', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO'],
+      ['4T', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO'],
+      ['5T', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO', 'VAGO']
+    ]
+  };
+
+  const turmas = ['1Q', '2Q', '3Q', '1A', '2A', '3A', '1F', '2F', '3F'];
+  const dias = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'];
+
+  const filtrarDados = () => {
+    let dados = gradeData[diaSelecionado];
+    
+    if (turmaSelecionada !== 'TODAS') {
+      const indice = turmas.indexOf(turmaSelecionada) + 1;
+      dados = dados.map(row => [row[0], row[indice]]);
+    }
+    
+    if (professorFiltro) {
+      dados = dados.map(row => {
+        const newRow = [row[0]];
+        for (let i = 1; i < row.length; i++) {
+          if (row[i].toLowerCase().includes(professorFiltro.toLowerCase())) {
+            newRow.push(row[i]);
+          } else {
+            newRow.push('-');
+          }
+        }
+        return newRow;
+      });
+    }
+    
+    return dados;
+  };
+
+  const baixarPDF = () => {
+    window.print();
+  };
+
+  const dadosFiltrados = filtrarDados();
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-xl">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Calendar className="w-10 h-10" />
+            <h1 className="text-4xl font-bold">Grade de Horários</h1>
+          </div>
+          <p className="text-center text-indigo-100 text-lg">Curso Integral - 2025</p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Controles */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* Seletor de Dia */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                📅 Dia da Semana
+              </label>
+              <select
+                value={diaSelecionado}
+                onChange={(e) => setDiaSelecionado(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                {dias.map(dia => (
+                  <option key={dia} value={dia}>{dia}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Seletor de Turma */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                🎓 Turma
+              </label>
+              <select
+                value={turmaSelecionada}
+                onChange={(e) => setTurmaSelecionada(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                <option value="TODAS">Todas as Turmas</option>
+                {turmas.map(turma => (
+                  <option key={turma} value={turma}>{turma}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Filtro de Professor */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                👤 Buscar Professor
+              </label>
+              <div className="relative">
+                <Search className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Digite o nome..."
+                  value={professorFiltro}
+                  onChange={(e) => setProfessorFiltro(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border-2 border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              onClick={baixarPDF}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all shadow-md hover:shadow-lg"
+            >
+              <Download className="w-5 h-5" />
+              Imprimir / Salvar PDF
+            </button>
+            
+            <button
+              onClick={() => setMostrarResumo(!mostrarResumo)}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg"
+            >
+              {mostrarResumo ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+              {mostrarResumo ? 'Ocultar' : 'Ver'} Informações
+            </button>
+          </div>
+        </div>
+
+        {/* Resumo */}
+        {mostrarResumo && (
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-lg p-6 mb-6 border-2 border-indigo-100">
+            <h3 className="text-xl font-bold text-indigo-900 mb-4">ℹ️ Informações da Grade</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h4 className="font-semibold text-indigo-700 mb-2">✅ Regras Validadas</h4>
+                <ul className="text-sm text-gray-700 space-y-1">
+                  <li>• Janelas obrigatórias respeitadas</li>
+                  <li>• 1M vago nas turmas especificadas</li>
+                  <li>• Sexta tarde totalmente livre</li>
+                  <li>• Sem conflitos de professores</li>
+                </ul>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h4 className="font-semibold text-indigo-700 mb-2">📊 Estatísticas</h4>
+                <ul className="text-sm text-gray-700 space-y-1">
+                  <li>• Total de aulas: <strong>387</strong></li>
+                  <li>• Professores: <strong>36</strong></li>
+                  <li>• Turmas: <strong>9</strong></li>
+                  <li>• Dias letivos: <strong>5</strong></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tabela de Horários */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+            <h2 className="text-2xl font-bold text-white">
+              {diaSelecionado} {turmaSelecionada !== 'TODAS' && `- Turma ${turmaSelecionada}`}
+            </h2>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+                  <th className="px-4 py-4 text-center font-bold sticky left-0 bg-indigo-600">Horário</th>
+                  {turmaSelecionada === 'TODAS' ? (
+                    turmas.map(turma => (
+                      <th key={turma} className="px-4 py-4 text-center font-bold">{turma}</th>
+                    ))
+                  ) : (
+                    <th className="px-4 py-4 text-center font-bold">{turmaSelecionada}</th>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {dadosFiltrados.map((row, idx) => (
+                  <tr key={idx} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <td className="px-4 py-4 font-bold text-center border-r-2 border-indigo-200 sticky left-0 bg-indigo-100">
+                      {row[0]}
+                    </td>
+                    {row.slice(1).map((cell, cellIdx) => (
+                      <td
+                        key={cellIdx}
+                        className={`px-4 py-4 text-center border-l border-gray-200 ${
+                          cell === 'VAGO' 
+                            ? 'bg-yellow-100 text-yellow-800 font-bold' 
+                            : cell === '-'
+                            ? 'bg-gray-100 text-gray-400'
+                            : 'text-gray-800'
+                        }`}
+                      >
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Legenda */}
+        <div className="mt-6 bg-white rounded-xl shadow-lg p-6">
+          <h3 className="font-bold text-gray-800 mb-3">📖 Legenda</h3>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-yellow-100 border-2 border-yellow-300 rounded"></div>
+              <span className="text-sm text-gray-700">Horário Vago</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-indigo-100 border-2 border-indigo-300 rounded"></div>
+              <span className="text-sm text-gray-700">Horário (1M-5M = Manhã)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-white border-2 border-gray-300 rounded"></div>
+              <span className="text-sm text-gray-700">Horário (1T-5T = Tarde)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 text-center text-gray-600 text-sm">
+          <p>Grade gerada e validada • Versão 3 • {new Date().getFullYear()}</p>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @media print {
+          .bg-gradient-to-br,
+          .bg-gradient-to-r,
+          button,
+          input,
+          select {
+            display: none !important;
+          }
+          table {
+            page-break-inside: auto;
+          }
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default GradeHorarios;

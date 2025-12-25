@@ -8,17 +8,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #64b5f6;
+            --primary: #6db3f2;
             --secondary: #4db6ac;
-            --bg: #1a1d2e;
-            --card-bg: #22283a;
-            --border: #2d3548;
-            --text: #d4d7e0;
-            --text-secondary: #8892a6;
+            --bg: #1e1e2e;
+            --card-bg: #2a2d3e;
+            --border: #3d4158;
+            --text: #e8eaed;
+            --text-secondary: #a8b1c9;
             --success: #81c784;
             --error: #e57373;
             --accent: #9575cd;
-            --hover: #2a3042;
+            --hover: #353849;
         }
 
         * {
@@ -61,9 +61,9 @@
             border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
-            background: rgba(0, 137, 123, 0.1);
-            color: var(--primary);
-            border: 1px solid var(--primary);
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
             margin-top: 1rem;
         }
 
@@ -612,6 +612,7 @@
             const statusText = document.getElementById('status-text');
             statusText.textContent = `Auditoria: ${current.successRate}% Success (${current.variantName})`;
             statusText.style.background = allPassed ? 'var(--success)' : 'var(--primary)';
+            statusText.style.color = '#1e1e2e';
 
             // Show variant info
             const infoItems = [

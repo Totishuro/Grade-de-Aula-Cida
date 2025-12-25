@@ -611,7 +611,7 @@
             const allPassed = Object.values(currentAuditResults).every(r => r.passed);
             const statusText = document.getElementById('status-text');
             statusText.textContent = `Auditoria: ${current.successRate}% Success (${current.variantName})`;
-            statusText.style.background = allPassed ? 'var(--success)' : '#ff9800';
+            statusText.style.background = allPassed ? 'var(--success)' : 'var(--primary)';
 
             // Show variant info
             const infoItems = [
@@ -624,7 +624,7 @@
             infoItems.forEach(item => {
                 const li = document.createElement('li');
                 li.className = 'audit-item';
-                if (item.includes('⚠️')) li.style.color = '#ff9800';
+                if (item.includes('⚠️')) li.style.color = '#ffb74d';
                 else if (item.includes('❌')) li.classList.add('error-item');
                 else li.style.fontWeight = '600';
                 li.textContent = item;

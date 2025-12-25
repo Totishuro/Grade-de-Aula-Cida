@@ -4,18 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade Escolar - Auditoria & Otimização</title>
+    <title>Grade de Aula CENTEC - Sistema Otimizado</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00897b;
-            --secondary: #00acc1;
-            --bg: #ffffff;
-            --card-bg: #ffffff;
-            --border: #eceff1;
-            --text: #263238;
-            --success: #2e7d32;
-            --error: #c62828;
+            --primary: #00bfa5;
+            --secondary: #26c6da;
+            --bg: #0a0e27;
+            --card-bg: #1a1f3a;
+            --border: #2d3258;
+            --text: #e8eaf6;
+            --text-secondary: #9fa8da;
+            --success: #66bb6a;
+            --error: #ef5350;
+            --accent: #7c4dff;
+            --hover: #252b4d;
         }
 
         * {
@@ -66,15 +69,16 @@
 
         /* Filter Bar */
         .filter-bar {
-            background: #fafafa;
+            background: var(--card-bg);
             padding: 1.5rem;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 2rem;
             display: flex;
             flex-wrap: wrap;
             gap: 1.5rem;
             justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .filter-group {
@@ -86,7 +90,7 @@
         .filter-group>label {
             font-size: 0.75rem;
             font-weight: 700;
-            color: #607d8b;
+            color: var(--primary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
@@ -98,9 +102,9 @@
             max-height: 180px;
             overflow-y: auto;
             padding: 0.5rem;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border);
             border-radius: 6px;
-            background: #fff;
+            background: var(--bg);
             min-width: 160px;
         }
 
@@ -115,7 +119,7 @@
         }
 
         .checkbox-label:hover {
-            background: rgba(0, 137, 123, 0.08);
+            background: var(--hover);
         }
 
         .checkbox-label input[type="checkbox"] {
@@ -133,12 +137,13 @@
 
         /* Tables */
         .shift-section {
-            background: #fff;
+            background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 2rem;
             overflow-x: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         h2 {
@@ -157,11 +162,11 @@
         td {
             padding: 0.8rem 0.6rem;
             text-align: center;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border);
         }
 
         th {
-            background: rgba(0, 137, 123, 0.08);
+            background: rgba(0, 191, 165, 0.15);
             font-weight: 700;
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -169,7 +174,7 @@
         }
 
         .day-header {
-            background: rgba(0, 137, 123, 0.05);
+            background: rgba(0, 191, 165, 0.1);
             font-weight: 700;
             color: var(--primary);
             min-width: 70px;
@@ -177,95 +182,98 @@
 
         .prof-cell {
             font-size: 0.85rem;
-            color: #455a64;
+            color: var(--text);
             transition: opacity 0.2s;
         }
 
         /* Day-based row coloring */
         tr.day-0 {
-            background: #ffffff;
+            background: var(--card-bg);
         }
 
-        /* Segunda - branco */
+        /* Segunda */
         tr.day-1 {
-            background: #f5fafa;
+            background: rgba(0, 191, 165, 0.05);
         }
 
-        /* Terça - verde muito claro */
+        /* Terça */
         tr.day-2 {
-            background: #ffffff;
+            background: var(--card-bg);
         }
 
-        /* Quarta - branco */
+        /* Quarta */
         tr.day-3 {
-            background: #f5fafa;
+            background: rgba(0, 191, 165, 0.05);
         }
 
-        /* Quinta - verde muito claro */
+        /* Quinta */
         tr.day-4 {
-            background: #fff8e1;
+            background: rgba(124, 77, 255, 0.05);
         }
 
         /* Sexta - amarelo claro */
 
         tr.day-0 .day-header {
-            background: #e8f5e9;
+            background: rgba(102, 187, 106, 0.15);
         }
 
         /* Segunda */
         tr.day-1 .day-header {
-            background: #e0f2f1;
+            background: rgba(0, 191, 165, 0.15);
         }
 
         /* Terça */
         tr.day-2 .day-header {
-            background: #e8f5e9;
+            background: rgba(102, 187, 106, 0.15);
         }
 
         /* Quarta */
         tr.day-3 .day-header {
-            background: #e0f2f1;
+            background: rgba(0, 191, 165, 0.15);
         }
 
         /* Quinta */
         tr.day-4 .day-header {
-            background: #fff3e0;
+            background: rgba(124, 77, 255, 0.15);
         }
 
         /* Sexta - destaque */
 
         .variant-selector {
-            background: #fff;
+            background: var(--card-bg);
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid var(--border);
             margin-bottom: 2rem;
             display: flex;
             align-items: center;
             gap: 1rem;
             justify-content: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .variant-selector select {
             padding: 0.5rem 1rem;
             border-radius: 6px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border);
+            background: var(--bg);
             font-size: 0.9rem;
-            color: var(--primary);
+            color: var(--text);
             cursor: pointer;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
 
         .variant-selector select:hover {
             border-color: var(--primary);
+            background: var(--hover);
         }
 
 
         .vago {
-            color: #cfd8dc;
+            color: var(--text-secondary);
             font-size: 0.7rem;
+            opacity: 0.5;
         }
 
         .lab {
@@ -282,10 +290,11 @@
         }
 
         .audit-card {
-            background: #fff;
+            background: var(--card-bg);
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .audit-card h3 {
@@ -300,7 +309,7 @@
 
         .audit-item {
             padding: 0.4rem 0;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--border);
             font-size: 0.85rem;
         }
 
@@ -335,8 +344,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>IA de Auditoria Logística</h1>
-            <p>Grade Escolar Otimizada - Versão Final Validada</p>
+            <h1>📚 Grade de Aula CENTEC</h1>
+            <p>Sistema de Otimização de Horários Escolares</p>
             <div class="status-badge" id="status-text">Carregando...</div>
         </header>
 
@@ -428,7 +437,7 @@
         </div>
 
         <footer>
-            Gerado por Antigravity AI - Engenharia de Grade Escolar
+            🎓 CENTEC - Sistema de Otimização de Horários | Desenvolvido com Antigravity AI
         </footer>
     </div>
 

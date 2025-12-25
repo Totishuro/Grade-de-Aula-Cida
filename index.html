@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Escolar - Auditoria & Otimização</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00897b;
+            --secondary: #00acc1;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --border: #eceff1;
+            --text: #263238;
+            --success: #2e7d32;
+            --error: #c62828;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: rgba(0, 137, 123, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-top: 1rem;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: #fafafa;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group>label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #607d8b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .checkbox-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #fff;
+            min-width: 160px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0.2rem 0.3rem;
+            border-radius: 4px;
+        }
+
+        .checkbox-label:hover {
+            background: rgba(0, 137, 123, 0.08);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+        }
+
+        .select-all-label {
+            font-weight: 600;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 0.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Tables */
+        .shift-section {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 0.8rem 0.6rem;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: rgba(0, 137, 123, 0.08);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+
+        .day-header {
+            background: rgba(0, 137, 123, 0.05);
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 70px;
+        }
+
+        .prof-cell {
+            font-size: 0.85rem;
+            color: #455a64;
+            transition: opacity 0.2s;
+        }
+
+        /* Day-based row coloring */
+        tr.day-0 {
+            background: #ffffff;
+        }
+
+        /* Segunda - branco */
+        tr.day-1 {
+            background: #f5fafa;
+        }
+
+        /* Terça - verde muito claro */
+        tr.day-2 {
+            background: #ffffff;
+        }
+
+        /* Quarta - branco */
+        tr.day-3 {
+            background: #f5fafa;
+        }
+
+        /* Quinta - verde muito claro */
+        tr.day-4 {
+            background: #fff8e1;
+        }
+
+        /* Sexta - amarelo claro */
+
+        tr.day-0 .day-header {
+            background: #e8f5e9;
+        }
+
+        /* Segunda */
+        tr.day-1 .day-header {
+            background: #e0f2f1;
+        }
+
+        /* Terça */
+        tr.day-2 .day-header {
+            background: #e8f5e9;
+        }
+
+        /* Quarta */
+        tr.day-3 .day-header {
+            background: #e0f2f1;
+        }
+
+        /* Quinta */
+        tr.day-4 .day-header {
+            background: #fff3e0;
+        }
+
+        /* Sexta - destaque */
+
+        .variant-selector {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .variant-selector select {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .variant-selector select:hover {
+            border-color: var(--primary);
+        }
+
+
+        .vago {
+            color: #cfd8dc;
+            font-size: 0.7rem;
+        }
+
+        .lab {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Audit Section */
+        .audit-section {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .audit-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .audit-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .audit-list {
+            list-style: none;
+        }
+
+        .audit-item {
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85rem;
+        }
+
+        .error-item {
+            color: var(--error);
+        }
+
+        .success-item {
+            color: var(--success);
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .audit-section {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>IA de Auditoria Logística</h1>
+            <p>Grade Escolar Otimizada - Versão Final Validada</p>
+            <div class="status-badge" id="status-text">Carregando...</div>
+        </header>
+
+        <!-- Variant Selector -->
+        <div class="variant-selector">
+            <label style="font-weight: 600; color: var(--primary);">Otimização:</label>
+            <select id="variant-select">
+                <option value="0">Modo Estrito (0 violações)</option>
+                <option value="1">Variante A (Sexta Livre)</option>
+                <option value="2">Variante B (Horários Relaxados)</option>
+                <option value="3">Variante C (Máxima Flexibilidade)</option>
+            </select>
+            <span style="font-size: 0.8rem; color: #666;" id="variant-desc">Escolha estratégica de alocação</span>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label>Professor</label>
+                <div class="checkbox-container" id="filter-prof-container"></div>
+            </div>
+            <div class="filter-group">
+                <label>Turma</label>
+                <div class="checkbox-container" id="filter-class-container"></div>
+            </div>
+            <div class="filter-group">
+                <label>Dia</label>
+                <div class="checkbox-container" id="filter-day-container"></div>
+            </div>
+            <div class="filter-group">
+                <label>Turno</label>
+                <div class="checkbox-container" id="filter-shift-container"></div>
+            </div>
+        </div>
+
+        <!-- Schedule Tables -->
+        <div id="section-morning" class="shift-section">
+            <h2>Turno: Manhã</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Horário</th>
+                        <th>1Q</th>
+                        <th>2Q</th>
+                        <th>3Q</th>
+                        <th>1A</th>
+                        <th>2A</th>
+                        <th>3A</th>
+                        <th>1F</th>
+                        <th>2F</th>
+                        <th>3F</th>
+                    </tr>
+                </thead>
+                <tbody id="body-morning"></tbody>
+            </table>
+        </div>
+
+        <div id="section-afternoon" class="shift-section">
+            <h2>Turno: Tarde</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Horário</th>
+                        <th>1Q</th>
+                        <th>2Q</th>
+                        <th>3Q</th>
+                        <th>1A</th>
+                        <th>2A</th>
+                        <th>3A</th>
+                        <th>1F</th>
+                        <th>2F</th>
+                        <th>3F</th>
+                    </tr>
+                </thead>
+                <tbody id="body-afternoon"></tbody>
+            </table>
+        </div>
+
+        <!-- Audit Section -->
+        <div class="audit-section">
+            <div class="audit-card">
+                <h3>Relatório de Auditoria</h3>
+                <ul class="audit-list" id="audit-list"></ul>
+            </div>
+            <div class="audit-card">
+                <h3>Checklist de Validação</h3>
+                <ul class="audit-list" id="validation-list"></ul>
+            </div>
+        </div>
+
+        <footer>
+            Gerado por Antigravity AI - Engenharia de Grade Escolar
+        </footer>
+    </div>
+
+    <script src="scheduler.js"></script>
+    <script src="audit_tests.js"></script>
+    <script>
+        // ========== INITIALIZATION ==========
+        const solution = solve();
+        const auditResults = runFullAudit(solution);
+
+        const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'];
+        const dayNames = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+        const classes = ['1Q', '2Q', '3Q', '1A', '2A', '3A', '1F', '2F', '3F'];
+
+        // ========== HELPER: Create Checkbox ==========
+        function createCheckbox(container, name, value, label, checked = true, isSelectAll = false) {
+            const lbl = document.createElement('label');
+            lbl.className = 'checkbox-label' + (isSelectAll ? ' select-all-label' : '');
+            lbl.innerHTML = `<input type="checkbox" name="${name}" value="${value}" ${checked ? 'checked' : ''} ${isSelectAll ? 'data-select-all="true"' : ''}> ${label}`;
+            container.appendChild(lbl);
+        }
+
+        // ========== POPULATE FILTERS ==========
+        function populateFilters() {
+            const profContainer = document.getElementById('filter-prof-container');
+            const classContainer = document.getElementById('filter-class-container');
+            const dayContainer = document.getElementById('filter-day-container');
+            const shiftContainer = document.getElementById('filter-shift-container');
+
+            // Professor filter
+            createCheckbox(profContainer, 'filter-prof', 'ALL', 'Selecionar Todos', true, true);
+            TEACHERS.forEach(t => {
+                const displayName = (t.type === 'Lab' && t.members) ? t.members.join(' / ') : t.name;
+                createCheckbox(profContainer, 'filter-prof', t.name, displayName, true);
+            });
+
+            // Class filter
+            createCheckbox(classContainer, 'filter-class', 'ALL', 'Selecionar Todas', true, true);
+            classes.forEach(c => createCheckbox(classContainer, 'filter-class', c, c, true));
+
+            // Day filter
+            createCheckbox(dayContainer, 'filter-day', 'ALL', 'Todos', true, true);
+            dayNames.forEach((d, i) => createCheckbox(dayContainer, 'filter-day', String(i), d, true));
+
+            // Shift filter
+            createCheckbox(shiftContainer, 'filter-shift', 'morning', 'Manhã', true);
+            createCheckbox(shiftContainer, 'filter-shift', 'afternoon', 'Tarde', true);
+        }
+
+        // ========== RENDER TABLE ==========
+        function renderTable(bodyId, data) {
+            const tbody = document.getElementById(bodyId);
+            tbody.innerHTML = '';
+
+            for (let d = 0; d < 5; d++) {
+                for (let p = 0; p < 5; p++) {
+                    const tr = document.createElement('tr');
+                    tr.dataset.day = String(d);
+                    tr.className = `day-${d}`;  // Add day class for row coloring
+
+                    // Time slot cell
+                    const tdTime = document.createElement('td');
+                    tdTime.className = 'day-header';
+                    tdTime.innerHTML = `<strong>${days[d]}</strong><br>${p + 1}º`;
+                    tr.appendChild(tdTime);
+
+                    // Class cells
+                    classes.forEach(c => {
+                        const prof = data[c][d * 5 + p];
+                        const td = document.createElement('td');
+                        td.className = 'prof-cell';
+                        td.dataset.class = c;
+
+                        if (!prof) {
+                            td.innerHTML = '<span class="vago">—</span>';
+                        } else {
+                            td.dataset.prof = prof;
+                            const tObj = TEACHERS.find(t => t.name === prof);
+                            if (tObj && tObj.type === 'Lab' && tObj.members) {
+                                td.textContent = tObj.members.join(' / ');
+                                td.classList.add('lab');
+                                td.dataset.profs = tObj.members.join(',');
+                            } else {
+                                td.textContent = prof;
+                            }
+                        }
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                }
+            }
+        }
+
+        // ========== FILTER LOGIC ==========
+        function getCheckedValues(name) {
+            const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+            const values = Array.from(checkboxes).map(cb => cb.value).filter(v => v !== 'ALL');
+            return values;
+        }
+
+        function applyFilters() {
+            const selectedProfs = getCheckedValues('filter-prof');
+            const selectedClasses = getCheckedValues('filter-class');
+            const selectedDays = getCheckedValues('filter-day');
+            const selectedShifts = getCheckedValues('filter-shift');
+
+            // Shift visibility
+            document.getElementById('section-morning').style.display =
+                selectedShifts.includes('morning') ? 'block' : 'none';
+            document.getElementById('section-afternoon').style.display =
+                selectedShifts.includes('afternoon') ? 'block' : 'none';
+
+            // Filter table rows and cells
+            ['body-morning', 'body-afternoon'].forEach(bodyId => {
+                document.querySelectorAll(`#${bodyId} tr`).forEach(row => {
+                    const rowDay = row.dataset.day;
+                    const dayVisible = selectedDays.length === 0 || selectedDays.includes(rowDay);
+                    row.style.display = dayVisible ? '' : 'none';
+
+                    if (dayVisible) {
+                        row.querySelectorAll('.prof-cell').forEach(cell => {
+                            const cellClass = cell.dataset.class;
+                            const cellProf = cell.dataset.prof || '';
+                            const cellProfs = cell.dataset.profs ? cell.dataset.profs.split(',') : [cellProf];
+
+                            const classMatch = selectedClasses.length === 0 || selectedClasses.includes(cellClass);
+                            const profMatch = selectedProfs.length === 0 ||
+                                cellProfs.some(p => selectedProfs.includes(p));
+
+                            cell.style.opacity = (classMatch && profMatch) ? '1' : '0.15';
+                        });
+                    }
+                });
+            });
+        }
+
+        // ========== SELECT ALL HANDLER ==========
+        function handleSelectAll(e) {
+            if (!e.target.dataset.selectAll) return;
+
+            const name = e.target.name;
+            const isChecked = e.target.checked;
+            document.querySelectorAll(`input[name="${name}"]`).forEach(cb => {
+                cb.checked = isChecked;
+            });
+            applyFilters();
+        }
+
+        // ========== EVENT DELEGATION ==========
+        document.querySelector('.filter-bar').addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                if (e.target.dataset.selectAll) {
+                    handleSelectAll(e);
+                } else {
+                    applyFilters();
+                }
+            }
+        });
+
+        // ========== RENDER AUDIT RESULTS ==========
+        function renderAudit(vIndex) {
+            const auditList = document.getElementById('audit-list');
+            const vList = document.getElementById('validation-list');
+            auditList.innerHTML = '';
+            vList.innerHTML = '';
+
+            const current = solution.allVariants[vIndex];
+            const currentAuditResults = runFullAudit({ schedule: current.schedule });
+
+            // Status Badge
+            const allPassed = Object.values(currentAuditResults).every(r => r.passed);
+            const statusText = document.getElementById('status-text');
+            statusText.textContent = `Auditoria: ${current.successRate}% Success (${current.variantName})`;
+            statusText.style.background = allPassed ? 'var(--success)' : '#ff9800';
+
+            // Show variant info
+            const infoItems = [
+                `📊 Taxa de sucesso: ${current.successRate}%`,
+                `📋 Variante Ativa: ${current.variantName}`,
+                ...current.violations,
+                ...current.workloadDetails.map(w => `❌ Carga: ${w}`)
+            ];
+
+            infoItems.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'audit-item';
+                if (item.includes('⚠️')) li.style.color = '#ff9800';
+                else if (item.includes('❌')) li.classList.add('error-item');
+                else li.style.fontWeight = '600';
+                li.textContent = item;
+                auditList.appendChild(li);
+            });
+
+            // Checklist
+            const rules = [
+                { key: 'cloning', label: 'Clonagem Proibida' },
+                { key: 'labs', label: 'Bloqueio Lab/Duplas' },
+                { key: 'fridayBlock', label: 'Sexta Tarde (FRED)' },
+                { key: 'freeSlots', label: 'Horários Vagos' },
+                { key: 'alexandre', label: 'Regras Alexandre' },
+                { key: 'workload', label: 'Carga Horária' }
+            ];
+
+            rules.forEach(rule => {
+                const passed = currentAuditResults[rule.key].passed;
+                const li = document.createElement('li');
+                li.className = 'audit-item ' + (passed ? 'success-item' : 'error-item');
+                li.textContent = `${passed ? '✔' : '❌'} ${rule.label}`;
+                vList.appendChild(li);
+            });
+        }
+
+        // ========== INITIALIZE & VARIANT CHANGE ==========
+        function changeVariant(index) {
+            const v = solution.allVariants[index];
+            document.getElementById('variant-desc').textContent = v.variantName;
+            renderTable('body-morning', v.schedule.morning);
+            renderTable('body-afternoon', v.schedule.afternoon);
+            applyFilters();
+            renderAudit(index);
+        }
+
+        document.getElementById('variant-select').addEventListener('change', (e) => {
+            changeVariant(e.target.value);
+        });
+
+        // Init
+        populateFilters();
+        const initialIdx = solution.bestIndex;
+        document.getElementById('variant-select').value = initialIdx;
+        changeVariant(initialIdx);
+
+    </script>
+</body>
+
+</html>

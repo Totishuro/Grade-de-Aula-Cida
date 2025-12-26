@@ -96,7 +96,18 @@ function solveWithOptions(options) {
     const teacherAssigned = {};
     TEACHERS.forEach(t => { teacherAssigned[t.name] = 0; });
 
-    function isSlotBlocked(turma, day, period, shift) {
+    function isSlotBlocked(turma, day, period, shift, teacherName = null) {
+        // Check if teacher should avoid recess (p3-p4, which is periods 2-3 in 0-indexed)
+        if (teacherName) {
+            const teacher = TEACHERS.find(t => t.name === teacherName);
+            if (teacher && teacher.avoidRecess) {
+                // Block p3 (index 2) and p4 (index 3)
+                if (period === 2 || period === 3) {
+                    return 'RECESS_BLOCK';
+                }
+            }
+        }
+
         const config = FREE_SLOTS[turma];
 
         if (config) {
@@ -143,11 +154,14 @@ function solveWithOptions(options) {
         }
 
         for (const [turma, count] of Object.entries(teacher.turmas)) {
+            // Special priority for ALEXANDRE (between Labs and normal teachers)
+            let priority = teacher.type === 'Lab' ? 0 : (teacher.name === 'ALEXANDRE' ? 0.5 : 1);
+
             requirements.push({
                 teacher: teacher.name,
                 turma,
                 count,
-                priority: teacher.type === 'Lab' ? 0 : 1,
+                priority: priority,
                 availConstraint: availDays,
                 consecutive: teacher.consecutive || 0,
                 lessonsPerDay: (teacher.lessonsPerDay && teacher.lessonsPerDay[turma]) || 0
@@ -155,7 +169,7 @@ function solveWithOptions(options) {
         }
     }
 
-    // Prioritize: Labs first, then teachers with least availability
+    // Prioritize: Labs first, Alexandre second, then teachers with least availability
     requirements.sort((a, b) => {
         if (a.priority !== b.priority) return a.priority - b.priority;
         if (a.availConstraint !== b.availConstraint) return a.availConstraint - b.availConstraint;
@@ -164,8 +178,8 @@ function solveWithOptions(options) {
 
     const dayOrders = [[0, 1, 2, 3, 4], [4, 3, 2, 1, 0], [2, 0, 4, 1, 3], [1, 3, 0, 2, 4], [3, 1, 4, 0, 2]];
 
-    // Alocação Iterativa (COT Protocol)
-    for (let pass = 0; pass < 20; pass++) {
+    // Alocação Iterativa (COT Protocol) - Increased passes for better optimization
+    for (let pass = 0; pass < 50; pass++) {
         for (const req of requirements) {
             const teacher = TEACHERS.find(t => t.name === req.teacher);
             let alreadyAssigned = 0;
@@ -197,7 +211,7 @@ function solveWithOptions(options) {
                     for (let period = 0; period < 5; period++) {
                         if (toAssign <= 0) break;
 
-                        const blocked = isSlotBlocked(req.turma, day, period, shift);
+                        const blocked = isSlotBlocked(req.turma, day, period, shift, req.teacher);
                         if (blocked === true) continue;
                         if (blocked === 'FRED_ONLY' && !teacher.fridayAfternoonAllowed) continue;
                         if (blocked === 'RECESS_BLOCK' && teacher.avoidRecess) continue;
@@ -227,15 +241,15 @@ function solveWithOptions(options) {
                                 const pIdx = period + k;
                                 if (pIdx >= 5) { canFitConsecutive = false; break; }
 
-                                // INVIOLABLE RULE: Alexandre cannot have p3 (idx 2) and p4 (idx 3) together
-                                // This allows p2-p3 (period=1, k=1 -> periods 1,2) and p4-p5 (period=3, k=1 -> periods 3,4)
-                                // But blocks p3-p4 (period=2, k=1 -> periods 2,3)
-                                if (req.teacher === 'ALEXANDRE' && period === 2 && k === 1) {
+                                // INVIOLABLE RULE: Alexandre cannot have p3-p4 (idx 2-3) consecutive
+                                // This blocks any pair that would span periods 3 and 4
+                                // Block if starting at period 2 (idx 2) with consecutive 2, which would be periods p3-p4
+                                if (req.teacher === 'ALEXANDRE' && period === 2 && req.consecutive === 2) {
                                     canFitConsecutive = false;
                                     break;
                                 }
 
-                                const b = isSlotBlocked(req.turma, day, pIdx, shift);
+                                const b = isSlotBlocked(req.turma, day, pIdx, shift, req.teacher);
                                 if (b === true || (b === 'RECESS_BLOCK' && teacher.avoidRecess) ||
                                     grid[req.turma][idx + k] !== null ||
                                     isTeacherBusy(req.teacher, day, pIdx, shift)) {

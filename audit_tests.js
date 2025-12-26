@@ -141,7 +141,9 @@ function runFullAudit(solution) {
         }
     });
 
-    // 6. Regras Alexandre & Consecutivas Gerais
+    results.consecutivas = { passed: true, details: [] };
+
+    // 6. Regras de Aulas Consecutivas Gerais
     for (const turma of classes) {
         teachers.forEach(t => {
             ['morning', 'afternoon'].forEach(shift => {
@@ -152,8 +154,8 @@ function runFullAudit(solution) {
                         if (schedule[shift][turma][d * 5 + p] === t.name) {
                             streak++;
                             if (streak > 2 && !t.name.includes('/') && t.name !== 'JEFF') {
-                                results.alexandre.passed = false; // Using alexandre category for general consecutive errors too for now or workload
-                                results.alexandre.details.push(`${t.name}: >2 seguidas em ${turma} (${days[d]})`);
+                                results.consecutivas.passed = false;
+                                results.consecutivas.details.push(`${t.name}: >2 seguidas em ${turma} (${days[d]})`);
                             }
                         } else {
                             streak = 0;
@@ -164,7 +166,7 @@ function runFullAudit(solution) {
         });
     }
 
-    // INVIOLABLE Alexandre Rules: ALL lessons MUST be geminadas (pairs) + NO p3-p4
+    // 7. Regras Específicas do ALEXANDRE (Geminadas + Bloqueio p3-p4)
     const alexS = teachers.find(t => t.name === 'ALEXANDRE');
     if (alexS) {
         for (const turma of classes) {

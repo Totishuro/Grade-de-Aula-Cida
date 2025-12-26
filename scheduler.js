@@ -96,18 +96,7 @@ function solveWithOptions(options) {
     const teacherAssigned = {};
     TEACHERS.forEach(t => { teacherAssigned[t.name] = 0; });
 
-    function isSlotBlocked(turma, day, period, shift, teacherName = null) {
-        // Check if teacher should avoid recess (p3-p4, which is periods 2-3 in 0-indexed)
-        if (teacherName) {
-            const teacher = TEACHERS.find(t => t.name === teacherName);
-            if (teacher && teacher.avoidRecess) {
-                // Block p3 (index 2) and p4 (index 3)
-                if (period === 2 || period === 3) {
-                    return 'RECESS_BLOCK';
-                }
-            }
-        }
-
+    function isSlotBlocked(turma, day, period, shift) {
         const config = FREE_SLOTS[turma];
 
         if (config) {
@@ -211,7 +200,7 @@ function solveWithOptions(options) {
                     for (let period = 0; period < 5; period++) {
                         if (toAssign <= 0) break;
 
-                        const blocked = isSlotBlocked(req.turma, day, period, shift, req.teacher);
+                        const blocked = isSlotBlocked(req.turma, day, period, shift);
                         if (blocked === true) continue;
                         if (blocked === 'FRED_ONLY' && !teacher.fridayAfternoonAllowed) continue;
                         if (blocked === 'RECESS_BLOCK' && teacher.avoidRecess) continue;
@@ -249,7 +238,7 @@ function solveWithOptions(options) {
                                     break;
                                 }
 
-                                const b = isSlotBlocked(req.turma, day, pIdx, shift, req.teacher);
+                                const b = isSlotBlocked(req.turma, day, pIdx, shift);
                                 if (b === true || (b === 'RECESS_BLOCK' && teacher.avoidRecess) ||
                                     grid[req.turma][idx + k] !== null ||
                                     isTeacherBusy(req.teacher, day, pIdx, shift)) {
